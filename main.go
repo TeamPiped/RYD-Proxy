@@ -67,7 +67,7 @@ func handler(c *fiber.Ctx) error {
 	}
 
 	for true {
-		req, _ := http.NewRequest("GET", "https://returnyoutubedislikeapi.com/Votes?videoId="+videoId, nil)
+		req, _ := http.NewRequest("GET", "https://returnyoutubedislikeapi.com/Votes?videoId="+videoId+"&likeCount=", nil)
 
 		req.Header.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0")
 		req.Header.Add("Accept", "application/json")

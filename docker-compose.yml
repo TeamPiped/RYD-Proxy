@@ -1,0 +1,13 @@
+services:
+  tor-proxy:
+    image: 1337kavin/alpine-tor:latest
+    restart: unless-stopped
+    environment:
+      - tors=15
+  ryd-proxy:
+    image: 1337kavin/ryd-proxy:latest
+    restart: unless-stopped
+    depends_on:
+      - tor-proxy
+    ports:
+      - "127.0.0.1:3000:3000"

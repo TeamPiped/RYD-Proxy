@@ -20,12 +20,12 @@ var client *http.Client
 func main() {
 
 	proxy := os.Getenv("PROXY")
+	var httpProxy func(*http.Request) (*url.URL, error)
 
-	if proxy == "" {
-		proxy = "socks5://tor-proxy:5566"
+	if proxy != "" {
+		proxyUrl, _ := url.Parse(proxy)
+		httpProxy = http.ProxyURL(proxyUrl)
 	}
-
-	proxyUrl, _ := url.Parse(proxy)
 
 	client = &http.Client{
 		Transport: &http.Transport{
@@ -41,7 +41,7 @@ func main() {
 			MaxConnsPerHost:       0,
 			MaxIdleConnsPerHost:   10,
 			MaxIdleConns:          0,
-			Proxy:                 http.ProxyURL(proxyUrl),
+			Proxy:                 httpProxy,
 		},
 	}
 

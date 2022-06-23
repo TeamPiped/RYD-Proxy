@@ -9,5 +9,7 @@ services:
     restart: unless-stopped
     depends_on:
       - tor-proxy
+    environment:
+      - PROXY=socks5://tor-proxy:5566
     ports:
       - "127.0.0.1:3000:3000"

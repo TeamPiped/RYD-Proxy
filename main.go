@@ -51,15 +51,26 @@ func main() {
 		},
 	)
 
-	app.Get("/votes/:videoId", handler)
+	// Route for /votes?videoId=:videoId
+	app.Get("/votes", handleQuery)
+
+	// Route for /votes/:videoId
+	app.Get("/votes/:videoId", handleParam)
 
 	log.Fatal(app.Listen(":3000"))
 }
 
-func handler(c *fiber.Ctx) error {
+func handleQuery(c *fiber.Ctx) error {
+	videoId := c.Query("videoId")
+	return getVotes(c, videoId)
+}
 
+func handleParam(c *fiber.Ctx) error {
 	videoId := c.Params("videoId")
+	return getVotes(c, videoId)
+}
 
+func getVotes(c *fiber.Ctx, videoId string) error {
 	match, _ := regexp.Match("^([a-zA-Z0-9_-]{11})", []byte(videoId))
 
 	if !match {

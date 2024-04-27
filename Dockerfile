@@ -9,11 +9,13 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
 
 FROM alpine
 
-RUN apk --no-cache add --no-check-certificate ca-certificates \
+RUN apk --no-cache add --no-check-certificate ca-certificates dumb-init \
     && update-ca-certificates
 
 
 COPY --from=build /app/main /ryd-proxy
 
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+
 EXPOSE 3000
-CMD [ "/ryd-proxy" ]
+CMD "/ryd-proxy"

@@ -77,7 +77,7 @@ func getVotes(c *fiber.Ctx, videoId string) error {
 		return c.Status(400).SendString("Invalid video id")
 	}
 
-	for true {
+	for {
 		req, _ := http.NewRequest("GET", "https://returnyoutubedislikeapi.com/Votes?videoId="+videoId+"&likeCount=", nil)
 
 		req.Header.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0")
@@ -91,7 +91,13 @@ func getVotes(c *fiber.Ctx, videoId string) error {
 
 		resp, err := client.Do(req)
 
-		if err != nil || resp.StatusCode == 429 {
+		if err != nil {
+			continue
+		}
+
+		defer resp.Body.Close()
+
+		if resp.StatusCode == 429 {
 			continue
 		}
 
@@ -109,7 +115,4 @@ func getVotes(c *fiber.Ctx, videoId string) error {
 
 		return c.Status(resp.StatusCode).SendStream(stream)
 	}
-
-	// Should never be reached
-	return nil
 }

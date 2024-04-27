@@ -91,11 +91,15 @@ func getVotes(c *fiber.Ctx, videoId string) error {
 
 		resp, err := client.Do(req)
 
-		if err != nil || resp.StatusCode == 429 {
+		if err != nil {
 			continue
 		}
 
 		defer resp.Body.Close()
+
+		if resp.StatusCode == 429 {
+			continue
+		}
 
 		ce := resp.Header.Get("Content-Encoding")
 

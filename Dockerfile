@@ -15,5 +15,8 @@ RUN apk --no-cache add --no-check-certificate ca-certificates \
 
 COPY --from=build /app/main /ryd-proxy
 
+RUN apk add dumb-init
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+
 EXPOSE 3000
-CMD [ "/ryd-proxy" ]
+CMD "/ryd-proxy"

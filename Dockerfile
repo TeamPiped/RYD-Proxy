@@ -1,4 +1,4 @@
-FROM golang:latest AS build
+FROM golang:alpine AS build
 
 WORKDIR /app/
 
@@ -7,15 +7,13 @@ COPY . .
 RUN --mount=type=cache,target=/root/.cache/go-build \
     go build -ldflags "-s -w" main.go
 
-FROM debian:stable-slim
+FROM alpine
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+RUN apk --no-cache add --no-check-certificate ca-certificates \
+    && update-ca-certificates
 
-WORKDIR /app/
 
-COPY --from=build /app/main /app/ryd-proxy
+COPY --from=build /app/main /ryd-proxy
 
 EXPOSE 3000
-CMD ./ryd-proxy
+CMD [ "/ryd-proxy" ]
